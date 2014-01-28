@@ -23,4 +23,4 @@ and a sqlite database. You'd do something like this:
 License, etc.
 ------------
 
-GPLv3, © John R. Lenton, blah blah.
+BSD simplified, © John R. Lenton, blah blah.
