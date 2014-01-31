@@ -12,11 +12,11 @@ Sample usage
 Let's say you are writing an app called “frobz”. It has a config file
 and a sqlite database. You'd do something like this:
 
-    configFile, err := xdg.Config.FirstExisting("frobz/config.txt") // XXX see below
+    configFileName, err := xdg.Config.FirstExisting("frobz/config.txt") // XXX see below
     if err == nil {
         // a config file exists! load it...
     }
-    dbFile, err := xdg.Data.EnsureFirst("frobz", "frobz.db")
+    dbFileName, err := xdg.Data.EnsureFirst("frobz", "frobz.db")
     // etc
 
 
