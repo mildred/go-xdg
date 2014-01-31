@@ -18,7 +18,7 @@ type xdgdSuite struct {
 	val1 string
 	env2 string
 	val2 string
-	dir  *xdgd
+	dir  *XDGDir
 }
 
 var _ = Suite(&xdgdSuite{})
@@ -29,7 +29,7 @@ func (s *xdgdSuite) SetUpTest(c *C) {
 	s.env2 = "go_xdg_two"
 	s.val1 = "something"
 	s.val2 = "one:two:three"
-	s.dir = &xdgd{s.env1, s.val1, s.env2, s.val2}
+	s.dir = &XDGDir{s.env1, s.val1, s.env2, s.val2}
 }
 
 func (s *xdgdSuite) TestHomePrefersEnviron(c *C) {
@@ -101,7 +101,7 @@ func (s *xdgdFHSuite) SetUpTest(c *C) {
 	os.Setenv("HOME", home)
 	s.xdgdSuite.SetUpTest(c)
 	s.val2 = c.MkDir() + ":" + c.MkDir() + ":" + c.MkDir()
-	s.dir = &xdgd{s.env1, s.val1, s.env2, s.val2}
+	s.dir = &XDGDir{s.env1, s.val1, s.env2, s.val2}
 }
 
 func (s *xdgdFHSuite) TearDownTest(c *C) {
