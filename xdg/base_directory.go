@@ -68,15 +68,12 @@ func (x *XDGDir) Dirs() []string {
 	return dirs
 }
 
-// FirstExisting returns the path to the  first of the given resource that
-// exists in the XDG directories. If none exist, error is set appropriately.
-//
-// A resource is usually an application name, followed by a filename. Nothing
-// in the standard nor in this library limits you to that.
-func (x *XDGDir) FirstExisting(resourcePath ...string) (fullPath string, err error) {
+// Find attempts to find the path suffix in all of the known XDG directories.
+// If not found, an error is returned.
+func (x *XDGDir) Find(suffix string) (absPath string, err error) {
 	var firstError error = nil
 	for _, path := range x.Dirs() {
-		name := filepath.Join(path, filepath.Join(resourcePath...))
+		name := filepath.Join(path, suffix)
 		_, err = os.Stat(name)
 		if err == nil {
 			return name, nil
@@ -87,38 +84,17 @@ func (x *XDGDir) FirstExisting(resourcePath ...string) (fullPath string, err err
 	return "", firstError
 }
 
-// EnsureFirst returns the path to the given resource in the user-specific XDG
-// directory; if it doesn't exist it is created before returning.
-//
-// A resource is usually an application name, followed by a filename. Nothing
-// in the standard nor in this library limits you to that, although
-// EnsureFirst supports that usage better than the alternatives.
-//
-// If only a single component of the resource path is given, it is assumed to
-// be a directory. If many are given, it is assumed that the last one is a
-// filename. To create a file in the base directory itself specify a directory
-// of "." before the filename; to create a folder tree without a file at the
-// end specify a last element of "".
-func (x *XDGDir) EnsureFirst(resourcePath ...string) (fullPath string, err error) {
-	filename := ""
-	if len(resourcePath) > 1 {
-		l := len(resourcePath) - 1
-		resourcePath, filename = resourcePath[:l], resourcePath[l]
-	}
-	resource := filepath.Join(x.Home(), filepath.Join(resourcePath...))
-	err = os.MkdirAll(resource, 0700)
-	if err != nil {
-		return "", err
-	}
-	if filename == "" {
-		return resource, nil
-	} else {
-		filename = filepath.Join(resource, filename)
-		f, err := os.OpenFile(filename, os.O_CREATE, 0600)
-		if err != nil {
-			return "", err
+// Ensure takes the path suffix given, and ensures that a matching file exists
+// in the home XDG directory. If it doesn't exist it is created. If it can't
+// be created, or exists but is unreadable, an error is returned.
+func (x *XDGDir) Ensure(suffix string) (absPath string, err error) {
+	absPath = filepath.Join(x.Home(), suffix)
+	err = os.MkdirAll(filepath.Dir(absPath), 0700)
+	if err == nil {
+		f, err := os.OpenFile(absPath, os.O_CREATE, 0600)
+		if err == nil {
+			f.Close()
 		}
-		f.Close()
-		return filename, nil
 	}
+	return
 }

@@ -71,7 +71,7 @@ func (s *xdgdSuite) TestDirsUsesDefault(c *C) {
 	c.Check(hs[0], Matches, s.home+".*"+s.val1)
 }
 
-// no repeat all the tests, but without the HOME environ.
+// now repeat all the tests, but without the HOME environ.
 type xdgdNoHomeSuite struct {
 	xdgdSuite
 }
@@ -108,7 +108,7 @@ func (s *xdgdFHSuite) TearDownTest(c *C) {
 	os.Setenv("HOME", s.real_home)
 }
 
-func (s *xdgdFHSuite) TestFirstExisting(c *C) {
+func (s *xdgdFHSuite) TestFind(c *C) {
 	vs := strings.Split(s.val2, ":")
 	res1 := "stuff"
 	exp1 := filepath.Join(s.home, s.val1, res1)
@@ -124,28 +124,28 @@ func (s *xdgdFHSuite) TestFirstExisting(c *C) {
 		res string
 		exp string
 	}{{res1, exp1}, {res2, exp2}, {res3, exp3}} {
-		rv, err := s.dir.FirstExisting(it.res)
+		rv, err := s.dir.Find(it.res)
 		c.Assert(err, IsNil)
 		c.Check(rv, Equals, it.exp)
 	}
-	_, err := s.dir.FirstExisting("missing")
+	_, err := s.dir.Find("missing")
 	c.Check(err, NotNil)
 }
 
 func (s *xdgdFHSuite) TestEnsureFirst(c *C) {
 	// creates it if missing
-	rv1, err := s.dir.EnsureFirst("missing", "file")
+	rv1, err := s.dir.Ensure("missing/file")
 	c.Assert(err, IsNil)
-	c.Check(rv1, Matches, s.home+".*"+"missing/file")
+	_, err = os.Stat(rv1)
+	c.Check(err, IsNil)
+	c.Check(rv1, Matches, s.home + ".*" + "missing/file")
 	// just gets it if existing
-	rv2, err := s.dir.EnsureFirst("missing", "file")
+	rv2, err := s.dir.Ensure("missing/file")
 	c.Assert(err, IsNil)
 	c.Check(rv2, Equals, rv1)
 }
 
 func (s *xdgdFHSuite) TestEnsureFirstFailures(c *C) {
-	_, err := s.dir.EnsureFirst(strings.Repeat("*", 1<<20), "this")
-	c.Assert(err, NotNil)
-	_, err = s.dir.EnsureFirst("this", strings.Repeat("*", 1<<20))
+	_, err := s.dir.Ensure(strings.Repeat("*", 1<<9)  + "/" + strings.Repeat("*", 1<<9) )
 	c.Assert(err, NotNil)
 }
