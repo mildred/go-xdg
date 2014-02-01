@@ -138,7 +138,7 @@ func (s *xdgdFHSuite) TestEnsureFirst(c *C) {
 	c.Assert(err, IsNil)
 	_, err = os.Stat(rv1)
 	c.Check(err, IsNil)
-	c.Check(rv1, Matches, s.home + ".*" + "missing/file")
+	c.Check(rv1, Matches, s.home+".*"+"missing/file")
 	// just gets it if existing
 	rv2, err := s.dir.Ensure("missing/file")
 	c.Assert(err, IsNil)
@@ -146,6 +146,6 @@ func (s *xdgdFHSuite) TestEnsureFirst(c *C) {
 }
 
 func (s *xdgdFHSuite) TestEnsureFirstFailures(c *C) {
-	_, err := s.dir.Ensure(strings.Repeat("*", 1<<9)  + "/" + strings.Repeat("*", 1<<9) )
+	_, err := s.dir.Ensure(strings.Repeat("*", 1<<9) + "/" + strings.Repeat("*", 1<<9))
 	c.Assert(err, NotNil)
 }
