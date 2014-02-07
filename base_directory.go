@@ -13,9 +13,9 @@ import (
 // given type should be stored.
 type XDGDir struct {
 	homeEnv  string
-	homeDflt string
+	homeDefault string
 	dirsEnv  string
-	dirsDflt string
+	dirsDefault string
 }
 
 var (
@@ -46,7 +46,7 @@ func (x *XDGDir) Home() string {
 		}
 		home = user.HomeDir
 	}
-	return filepath.Join(home, x.homeDflt)
+	return filepath.Join(home, x.homeDefault)
 }
 
 // Dirs returns the preference-ordered set of base directories to search for
@@ -57,7 +57,7 @@ func (x *XDGDir) Dirs() []string {
 	if x.dirsEnv != "" {
 		xtra := os.Getenv(x.dirsEnv)
 		if xtra == "" {
-			xtra = x.dirsDflt
+			xtra = x.dirsDefault
 		}
 		for _, path := range filepath.SplitList(xtra) {
 			if path != "" {
