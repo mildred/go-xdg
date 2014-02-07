@@ -11,6 +11,9 @@ import (
 // An XDGDir holds configuration for and can be used to access the
 // XDG-specified base directories relative to which user-specific files of a
 // given type should be stored.
+//
+// Typically you wouldn't use XDGDir directly, but one of the
+// predefined ones which implement the spect: Data, Config and Cache.
 type XDGDir struct {
 	homeEnv  string
 	homeDefault string
