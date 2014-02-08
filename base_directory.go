@@ -13,7 +13,7 @@ import (
 // given type should be stored.
 //
 // Typically you wouldn't use XDGDir directly, but one of the
-// predefined ones which implement the spect: Data, Config and Cache.
+// predefined ones which implement the spec: Data, Config and Cache.
 type XDGDir struct {
 	homeEnv  string
 	homeDefault string
