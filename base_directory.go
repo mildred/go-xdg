@@ -87,6 +87,14 @@ func (x *XDGDir) Find(suffix string) (absPath string, err error) {
 	return "", firstError
 }
 
+// Return the path suffix location in the XDG Home directory
+// Construct leading directories if needed
+func (x *XDGDir) FindHome(suffix string) (absPath string, err error) {
+	absPath = filepath.Join(x.Home(), suffix)
+	err = os.MkdirAll(filepath.Dir(absPath), 0700)
+	return absPath, err
+}
+
 // Ensure takes the path suffix given, and ensures that a matching file exists
 // in the home XDG directory. If it doesn't exist it is created. If it can't
 // be created, or exists but is unreadable, an error is returned.
@@ -99,5 +107,14 @@ func (x *XDGDir) Ensure(suffix string) (absPath string, err error) {
 			f.Close()
 		}
 	}
-	return
+	return absPath, err
+}
+
+// Ensure takes the path suffix given, and ensures that a matching directory exists
+// in the home XDG directory. If it doesn't exist it is created. If it can't
+// be created, or exists but is unreadable, an error is returned.
+func (x *XDGDir) EnsureDir(suffix string) (absPath string, err error) {
+	absPath = filepath.Join(x.Home(), suffix)
+	err = os.MkdirAll(absPath, 0700)
+	return absPath, err
 }
